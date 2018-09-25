@@ -1,2 +1,7 @@
-From k8s.gcr.io/kube-scheduler-amd64:v1.11.3
-MAINTAINER polarwu <676989649@qq.com>
+FROM concourse/buildroot:base
+
+ADD https://storage.googleapis.com/kubernetes-release/release/v1.11.3/bin/linux/amd64/kubectl /usr/local/bin/kubectl
+RUN chmod +x /usr/local/bin/kubectl
+
+ADD assets/ /opt/resource/
+RUN chmod +x /opt/resource/*
