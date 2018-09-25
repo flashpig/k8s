@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: hello-world-app-pod
+  replicas: 3 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: hello-world-app-pod
+    spec:
+      containers:
+      - name: hello-world-app-container
+        image: nginx:1.14
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nfs-kunkun
+          mountPath: "/usr/share/nginx/html"
+      volumes:
+      - name: nfs-kunkun
+        persistentVolumeClaim:
+          claimName: nfs-pvc-kunkun

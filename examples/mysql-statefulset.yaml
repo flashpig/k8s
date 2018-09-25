@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-satefulset
+spec:
+  selector:
+    matchLabels:
+      app: mysql-pod
+  serviceName: memcached
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql-pod
+    spec:
+      containers:
+      -   name: mysql
+          image: mysql:5.7
+          ports:
+          - containerPort: 3306
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-password-secret
+                key: mysql-root-pwd
+          volumeMounts:
+          - name: mysql-data
+            #mountPath: "/var/lib/mysql" #默认mysql data dir
+            mountPath: "/www/mysql-5.7-data/"
+          - name: mysql-configmap
+            mountPath: /etc/mysql/mysql.conf.d/
+          livenessProbe:  #存活检测
+            exec:
+              command:
+              - /bin/sh
+              - "-c"
+              - MYSQL_PWD="${MYSQL_ROOT_PASSWORD}"
+              - mysql -h 127.0.0.1 -u root -e "SELECT 1"
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe: #可用性检测
+            exec:
+              command:
+              - /bin/sh
+              - "-c"
+              - MYSQL_PWD="${MYSQL_ROOT_PASSWORD}"
+              - mysql -h 127.0.0.1 -u root -e "SELECT 1"
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+      volumes: #卷配置
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: mysql-nfs-pvc
+      - name: mysql-configmap
+        configMap:
+          name: mysql-configmap
+
+

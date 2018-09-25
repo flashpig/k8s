@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+  - host: www.es6.com
+    http:
+      paths:
+      - backend:
+          serviceName: es6-service
+          servicePort: 80
+        path: /
+  - host: abs.es6.com
+    http:
+      paths:
+      - backend:
+          serviceName: es6-service
+          servicePort: 80
+        path: /

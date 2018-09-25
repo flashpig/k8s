@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: es6-service
+spec:
+  selector:
+    app: es6-pod
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80

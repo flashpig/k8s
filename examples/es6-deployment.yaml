@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es6-deployment
+spec:
+  selector:
+    matchLabels:
+      app: es6-pod
+  replicas: 3 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: es6-pod
+    spec:
+      containers:
+      - name: es6-pod
+        image: registry.cn-hangzhou.aliyuncs.com/jingjingxyk/javascript-tutorial:latest
+        ports:
+        - containerPort: 80
